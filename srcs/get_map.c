@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:21:32 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/16 18:28:20 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/17 19:50:05 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ static t_map	*new_point(char *param, int x, int y)
 		return (NULL);
 	new->x = x;
 	new->y = y;
-	new->z = ft_atoi(param);
+	new->z = ft_atoi(param) * -0.2;
+	new->X = /*20 * (x + 2 * new->z);*/20 * (x - y + 20);
+	new->Y =/* 20 * (y + new->z);*/20 * (new->z + 0.5 * x + 0.5 * y + 20);
 	return (new);
 }
 
@@ -112,25 +114,4 @@ t_map			*get_map(char *file)
 		y++;
 	}
 	return (map);
-}
-
-int		main(int ac, char **av)
-{
-	t_map	*map;
-	t_map	*line;
-
-	if (ac != 2)
-		return (1);
-	map = get_map(av[1]);
-	while (map)
-	{
-		line = map;
-		while (line)
-		{
-			ft_printf("%-3d", line->z);
-			line = line->right;
-		}
-		ft_putchar('\n');
-		map = map->down;
-	}
 }
