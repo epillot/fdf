@@ -6,41 +6,59 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/17 13:01:52 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/22 18:10:33 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/22 14:06:10 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	draw_segment(t_map *p0, t_map *p1, t_param p)
+void	draw_segment(t_map *point1, t_map *point2, t_param p)
 {
-	int dx = ft_abs(p1->X - p0->X);
-	int dy = ft_abs(p1->Y - p0->Y);
-	int e1 = (dx > dy ? dx : -dy) / 2;
-	int e2;
-	int xi = p0->X < p1->X ? 1 : -1;
-	int yi = p0->Y < p1->Y ? 1 : -1;
-	int x = p0->X;
-	int y = p0->Y;
+	int x1 = point1->X;
+	int x2 = point2->X;
+	int y1 = point1->Y;
+	int y2 = point2->Y;
+	int ex = ft_abs(x2 - x1);
+	int ey = ft_abs(y2 - y1);
+	int dx = 2 * ex;
+	int dy = 2 * ey;
+	int Dx = ex;
+	int Dy = ey;
+	int i = 0;
+	int xi = (x1 > x2 ? -1 : 1);
+	int yi = (y1 > y2 ? -1 : 1);
 	char *tmp;
 
-	while (x != p1->X || y != p1->Y)
+	if (Dx > Dy)
 	{
-	//	if (x < WIDTH && y < HEIGHT && x >= 0 && y >= 0)
-	//	{
-			tmp = p.data + x * p.bpp / 8 + y * p.sizeline;
+		while (i <= Dx)
+		{
+			tmp = p.data + x1 * p.bpp / 8 + y1 * p.sizeline;
 			*(int*)tmp = mlx_get_color_value(p.mlx, 0x00ffffff);
-	//	}
-		e2 = e1;
-		if (e2 > -dx)
-		{
-			e1 -= dy;
-			x += xi;
+			i++;
+			x1 += xi;
+			ex -= dy;
+			if (ex < 0)
+			{
+				y1 += yi;
+				ex += dx;
+			}
 		}
-		if (e2 < dy)
+	}
+	else
+	{
+		while (i <= Dy)
 		{
-			e1 += dx;
-			y += yi;
+			tmp = p.data + x1 * p.bpp / 8 + y1 * p.sizeline;
+			*(int*)tmp = mlx_get_color_value(p.mlx, 0x00ffffff);
+			i++;
+			y1 += yi;
+			ey -= dx;
+			if (ey < 0)
+			{
+				x1 += xi;
+				ey += dy;
+			}
 		}
 	}
 }

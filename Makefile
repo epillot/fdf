@@ -6,7 +6,7 @@
 #    By: epillot <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/01/04 16:40:08 by epillot           #+#    #+#              #
-#    Updated: 2017/02/17 17:12:41 by epillot          ###   ########.fr        #
+#    Updated: 2017/02/21 17:57:46 by epillot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ FLAG = -Wall -Wextra -Werror
 SRC_NAME =  get_map.c\
 			main.c\
 			draw_segment.c\
+			display_map.c\
+			get_iso_coord.c\
 
 SRC_PATH = srcs/
 
