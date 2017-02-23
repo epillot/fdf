@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/17 12:27:29 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/22 19:07:12 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/23 17:14:03 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,10 @@ int		main(int ac, char **av)
 
 	if (ac != 2)
 		return (1);
-	p.offset = 0;
-	p.ratio_z = 1;
-	p.map = get_map(av[1], &p);
-	ft_printf("%d\n", p.offset);
 	p.mlx = mlx_init();
-	p.coeff = 5;
+	p.map = get_map(av[1]);
+	p.ratio_z = 3;
+	p.proj = 0;
 	display_map(&p);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:15:00 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/22 18:50:15 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/23 17:07:51 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,8 @@
 # include <fcntl.h>
 # include <limits.h>
 
-# define WIDTH_MIN 512
-# define HEIGHT_MIN 512
 # define WIDTH_MAX 2048
-# define HEIGHT_MAX 2048
+# define HEIGHT_MAX 1024
 
 typedef struct	s_map
 {
@@ -47,21 +45,22 @@ typedef struct	s_param
 	char	*data;
 	int		width;
 	int		height;
-	int		offset;
 	int		xmax;
 	int		ymax;
 	int		xmin;
 	int		ymin;
 	int		ratio_z;
-	int		coeff;
+	int		coeff_x;
+	int		coeff_y;
+	int		proj;
 	int		bpp;
 	int		sizeline;
 	int		endian;
 }				t_param;
 
-t_map			*get_map(char *file, t_param *p);
+t_map			*get_map(char *file);
 void			draw_segment(t_map *point1, t_map *point2, t_param p);
 void			display_map(t_param *p);
-void			get_iso_coord(t_map *map, t_param *p);
+void			get_iso_coord(t_map *map, t_param *p, int proj);
 
 #endif
