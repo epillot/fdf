@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/17 13:01:52 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/23 19:50:52 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/24 19:14:20 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,48 @@ static void	draw_point(int x, int y, int color, t_param p)
 	unsigned int	c;
 	char			*tmp;
 	int				i;
-	void			*c2;
 
 	i = 0;
-	c2 = &c;
 	tmp = p.data + x * p.bpp / 8 + y * p.sizeline;
 	c = mlx_get_color_value(p.mlx, color);
-	while (i < 4)
+	while (i < p.bpp / 8)
 	{
-		*tmp++ = *(char*)(c2)++;
+		if (p.endian == p.local_endian)
+			*(tmp + i) = *(((char*)&c) + i);
+		else
+			*(tmp + i) = *(((char*)(&c) + p.bpp / 8 - i - 1));
 		i++;
 	}
+}
+
+int			get_color(t_param p, int z)
+{
+	int zdiff = ft_abs(p.zmax - p.zmin);
+	int var = 0;
+	if (zdiff)
+		var = 255 / zdiff;
+	return ((z - p.zmin) * var);
+}
+
+int			*get_color_palette(int z_in, int z_fin, int nbpts, t_param p)
+{
+	int		*color;
+	int		i;
+
+
+	i = 0;
+	if (!nbpts)
+		return (NULL);
+	int zdiff = z_fin - z_in;
+	int varz = zdiff / nbpts;
+	color = malloc(sizeof(int) * nbpts);
+	while (i < nbpts)
+	{
+		color[i] = 0x00ffffff - get_color(p, z_in);
+		i++;
+		z_in += varz;
+	}
+	return (color);
 }
 
 void		draw_segment(t_map *p0, t_map *p1, t_param p)
@@ -40,14 +71,10 @@ void		draw_segment(t_map *p0, t_map *p1, t_param p)
 	int yi = p0->Y < p1->Y ? 1 : -1;
 	int x = p0->X;
 	int y = p0->Y;
-	//char *tmp;
-	int zdiff = p0->z - p1->z;
-	ft_printf("zdiff: %d\n", zdiff);
+	int *color = get_color_palette(p0->z / p.ratio_z, p1->z / p.ratio_z, ft_max(dx, dy), p);
 	while (x != p1->X || y != p1->Y)
 	{
-		/*tmp = p.data + x * p.bpp / 8 + y * p.sizeline;
-		*(int*)tmp = mlx_get_color_value(p.mlx, color);*/
-		draw_point(x, y, 0x00ffffff, p);
+		draw_point(x, y, *color++, p);
 		e2 = e1;
 		if (e2 > -dx)
 		{

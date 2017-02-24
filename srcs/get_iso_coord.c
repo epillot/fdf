@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/21 16:52:15 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/23 19:11:47 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/24 15:28:42 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ void		get_iso_coord(t_map *map, t_param *p, int proj)
 				p->xmin = line->X;
 			if (line->Y < p->ymin)
 				p->ymin = line->Y;
+			if (line->z / p->ratio_z > p->zmax)
+				p->zmax = line->z / p->ratio_z;
+			if (line->z / p->ratio_z < p->zmin)
+				p->zmin = line->z / p->ratio_z;
 			line = line->right;
 		}
 		map = map->down;

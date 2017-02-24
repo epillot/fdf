@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:15:00 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/23 17:07:51 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/24 15:29:30 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,10 @@ typedef struct	s_param
 	int		height;
 	int		xmax;
 	int		ymax;
+	int		zmax;
 	int		xmin;
 	int		ymin;
+	int		zmin;
 	int		ratio_z;
 	int		coeff_x;
 	int		coeff_y;
@@ -56,6 +58,7 @@ typedef struct	s_param
 	int		bpp;
 	int		sizeline;
 	int		endian;
+	int		local_endian;
 }				t_param;
 
 t_map			*get_map(char *file);
