@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:15:00 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/24 15:29:30 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/28 18:48:51 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,60 +21,74 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <errno.h>
 
-# define WIDTH_MAX 1500
-# define HEIGHT_MAX 750
+# define WIDTH 2048
+# define HEIGHT 1024
 
 typedef struct	s_map
 {
 	int				x;
 	int				y;
 	int				z;
-	int				X;
-	int				Y;
+	int				xx;
+	int				yy;
 	struct s_map	*right;
 	struct s_map	*down;
 }				t_map;
 
-typedef struct s_ratio
+typedef struct	s_ratio
 {
-	int ratio;
-	struct s_ratio *prev;
-	struct s_ratio *next;
-}	t_ratio;
+	int				ratio;
+	struct s_ratio	*prev;
+	struct s_ratio	*next;
+}				t_ratio;
+
+typedef struct	s_segment
+{
+	int				dx;
+	int				dy;
+	int				e1;
+	int				e2;
+	int				xi;
+	int				yi;
+	int				zi;
+	int				x;
+	int				y;
+	int				z;
+
+}				t_segment;
 
 typedef struct	s_param
 {
-	void	*mlx;
-	void	*win;
-	void	*img;
-	t_map	*map;
-	char	*data;
-	int		width;
-	int		height;
-	int		xmax;
-	int		ymax;
-	int		zmax;
-	int		xmin;
-	int		ymin;
-	int		zmin;
-//	int		ratio_z;
-	int		ratio_z_min;
-	int		ratio_z_max;
-	int		coeff_x;
-	int		coeff_y;
-	int		proj;
-	t_ratio		*r;
-	int		bpp;
-	int		sizeline;
-	int		endian;
-	int		local_endian;
+	void			*mlx;
+	void			*win;
+	void			*img;
+	t_map			*map;
+	char			*data;
+	int				width;
+	int				height;
+	int				xmax;
+	int				ymax;
+	int				zmax;
+	int				xmin;
+	int				ymin;
+	int				zmin;
+	int				coeff_x;
+	int				coeff_y;
+	int				proj;
+	t_ratio			*r;
+	int				bpp;
+	int				sizeline;
+	int				endian;
+	int				local_endian;
 }				t_param;
 
-t_map			*get_map(char *file, t_param *p);
-void			draw_segment(t_map *point1, t_map *point2, t_param p);
+t_map			*get_map(int fd, t_param *p);
+void			draw_map(t_param p);
 void			display_map(t_param *p, int first);
-void			get_iso_coord(t_map *map, t_param *p, int proj);
-void     get_ratio(int z, t_param *p);
+void			get_new_coord(t_map *map, t_param *p, int proj);
+void			get_ratio(int z, t_param *p);
+void			fdf_error(int errnum, char *file);
 
 #endif
