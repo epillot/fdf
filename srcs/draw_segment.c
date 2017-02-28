@@ -33,11 +33,16 @@ static void	draw_point(int x, int y, int color, t_param p)
 
 int			get_color(t_param p, int z)
 {
-	int zdiff = ft_abs(p.zmax - p.zmin);
-	int var = 0;
-	if (zdiff)
-		var = 255 / zdiff;
-	return ((z - p.zmin) * var);
+	int c = 0x00ffffff;
+	char *clr = (char*)&c;
+	if (p.zmax && z >= 0)
+		*clr = 255 - z * (255 / p.zmax);
+	else if (p.zmin)
+	{	
+		*(clr + 1) = 255 - z * (255 / p.zmin);
+		*(clr + 2) = 255 - z * (255 / p.zmin);
+	}
+	return (c);
 }
 
 int			*get_color_palette(int z_in, int z_fin, int nbpts, t_param p)
@@ -54,7 +59,7 @@ int			*get_color_palette(int z_in, int z_fin, int nbpts, t_param p)
 	color = malloc(sizeof(int) * nbpts);
 	while (i < nbpts)
 	{
-		color[i] = 0x00ffffff - get_color(p, z_in);
+		color[i] = get_color(p, z_in);
 		i++;
 		z_in += varz;
 	}
@@ -71,7 +76,7 @@ void		draw_segment(t_map *p0, t_map *p1, t_param p)
 	int yi = p0->Y < p1->Y ? 1 : -1;
 	int x = p0->X;
 	int y = p0->Y;
-	int *color = get_color_palette(p0->z / p.ratio_z, p1->z / p.ratio_z, ft_max(dx, dy), p);
+	int *color = get_color_palette(p0->z / p.r->ratio, p1->z / p.r->ratio, ft_max(dx, dy), p);
 	while (x != p1->X || y != p1->Y)
 	{
 		draw_point(x, y, *color++, p);

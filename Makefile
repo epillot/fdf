@@ -19,6 +19,7 @@ SRC_NAME =  get_map.c\
 			draw_segment.c\
 			display_map.c\
 			get_iso_coord.c\
+			get_ratio.c\
 
 SRC_PATH = srcs/
 
@@ -28,7 +29,7 @@ OBJ_PATH = obj/
 
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 
-INC = ./includes/
+INC = -I./includes/
 
 all: $(NAME)
 
@@ -36,17 +37,17 @@ $(NAME): $(OBJ)
 	@make -C libft/
 	@make -C minilibx/
 	@echo "\033[35mmaking $(NAME)...\033[0m"
-	@gcc $(FLAG) -o $(NAME) $(OBJ) -I $(INC) -L ./libft/ -lft -L ./minilibx/ -lmlx -framework OpenGL -framework AppKit
+	@gcc $(FLAG) -o $(NAME) $(OBJ) $(INC) -Llibft -lft -Lminilibx -lmlx -framework OpenGL -framework AppKit
 	@echo "\033[32mdone\033[0m"
 	
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir -p obj
-	@gcc $(FLAG) -c -I $(INC) $< -o $@
+	@gcc $(FLAG) -c $< -o $@ $(INC)
 
 clean:
 	@make fclean -C libft/
 	@make clean -C minilibx/
-	@/bin/rm -f
+	@/bin/rm -f $(OBJ)
 	@echo "\033[34mobj \033[32mcleaned\033[0m"
 
 fclean: clean

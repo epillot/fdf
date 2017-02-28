@@ -22,8 +22,8 @@
 # include <fcntl.h>
 # include <limits.h>
 
-# define WIDTH_MAX 2048
-# define HEIGHT_MAX 1024
+# define WIDTH_MAX 1500
+# define HEIGHT_MAX 750
 
 typedef struct	s_map
 {
@@ -35,6 +35,13 @@ typedef struct	s_map
 	struct s_map	*right;
 	struct s_map	*down;
 }				t_map;
+
+typedef struct s_ratio
+{
+	int ratio;
+	struct s_ratio *prev;
+	struct s_ratio *next;
+}	t_ratio;
 
 typedef struct	s_param
 {
@@ -51,19 +58,23 @@ typedef struct	s_param
 	int		xmin;
 	int		ymin;
 	int		zmin;
-	int		ratio_z;
+//	int		ratio_z;
+	int		ratio_z_min;
+	int		ratio_z_max;
 	int		coeff_x;
 	int		coeff_y;
 	int		proj;
+	t_ratio		*r;
 	int		bpp;
 	int		sizeline;
 	int		endian;
 	int		local_endian;
 }				t_param;
 
-t_map			*get_map(char *file);
+t_map			*get_map(char *file, t_param *p);
 void			draw_segment(t_map *point1, t_map *point2, t_param p);
-void			display_map(t_param *p);
+void			display_map(t_param *p, int first);
 void			get_iso_coord(t_map *map, t_param *p, int proj);
+void     get_ratio(int z, t_param *p);
 
 #endif

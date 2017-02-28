@@ -19,28 +19,19 @@ static int	key_function(int keycode, void *param)
 	p = (t_param*)param;
 	if (keycode == 53)
 		exit(EXIT_SUCCESS);
-	else if (keycode == 126)
+	else if (keycode == 126 && p->r->prev)
 	{
-		if (p->ratio_z > 1)
-			p->ratio_z--;
-		else if (p->ratio_z < -1)
-			p->ratio_z++;
-		else
-			return (0);
-		mlx_destroy_window(p->mlx, p->win);
-		display_map(p);
+		p->r = p->r->prev;
+		mlx_destroy_image(p->mlx, p->img);
+		mlx_clear_window(p->mlx, p->win);
+		display_map(p, 0);
 	}
-	else if (keycode == 125)
+	else if (keycode == 125 && p->r->next)
 	{
-		if (p->zmax != 0 || p->zmin != 0)
-		{
-			if (p->ratio_z > 0)
-				p->ratio_z++;
-			else
-				p->ratio_z--;
-			mlx_destroy_window(p->mlx, p->win);
-			display_map(p);
-		}
+		p->r = p->r->next;
+		mlx_destroy_image(p->mlx, p->img);
+		mlx_clear_window(p->mlx, p->win);
+		display_map(p, 0);
 	}
 	else if (keycode == 49)
 	{
@@ -48,15 +39,16 @@ static int	key_function(int keycode, void *param)
 			p->proj = 1;
 		else
 			p->proj = 0;
-		mlx_destroy_window(p->mlx, p->win);
-		display_map(p);
+		mlx_destroy_image(p->mlx, p->img);
+		mlx_clear_window(p->mlx, p->win);
+		display_map(p, 0);
 	}
-	else if (keycode == 78)
+	/*else if (keycode == 78)
 	{
 		p->ratio_z *= -1;
 		mlx_destroy_window(p->mlx, p->win);
-		display_map(p);
-	}
+		display_map(p, 1);
+	}*/
 	return (1);
 }
 
@@ -64,10 +56,10 @@ static void	adjust_new_coord(t_map *map, t_param *p)
 {
 	t_map   *line;
 
-	while ((p->xmax - p->xmin) * p->coeff_x > WIDTH_MAX)
+	while ((p->xmax - p->xmin + 1) * p->coeff_x + 40 > WIDTH_MAX)
 		p->coeff_x--;
 	p->width = (p->xmax - p->xmin + 1) * p->coeff_x;
-	while ((p->ymax - p->ymin) * p->coeff_y > HEIGHT_MAX)
+	while ((p->ymax - p->ymin + 1) * p->coeff_y + 40 > HEIGHT_MAX)
 		p->coeff_y--;
 	p->height = (p->ymax - p->ymin + 1) * p->coeff_y;
 	while (map)
@@ -91,19 +83,20 @@ static void	init_param(t_param *p)
 	p->xmin = INT_MAX;
 	p->ymin = INT_MAX;
 	p->zmin = INT_MAX;
-	p->coeff_x = 20;
-	p->coeff_y = 20;
+	p->coeff_x = 30;
+	p->coeff_y = 30;
 }
 
-void		display_map(t_param *p)
+void		display_map(t_param *p, int win)
 {
 	t_map	*map;
 	t_map	*line;
 
 	init_param(p);
 	get_iso_coord(p->map, p, p->proj);
+	ft_putchar('a');
 	adjust_new_coord(p->map, p);
-	ft_printf("ratio_z: %d\n", p->ratio_z);
+//	ft_printf("ratio_z: %d\n", p->ratio_z);
 	if (p->width <= 0 || p->height <= 0)
 	{
 		ft_printf("width: %d, height: %d\n", p->width, p->height);
@@ -111,7 +104,8 @@ void		display_map(t_param *p)
 		exit(EXIT_FAILURE);
 	}
 	ft_printf("zmin: %d, zmax: %d\n", p->zmin, p->zmax);
-	p->win = mlx_new_window(p->mlx, p->width + p->coeff_x, p->height + p->coeff_y, "fdf");
+	if (win)
+		p->win = mlx_new_window(p->mlx, WIDTH_MAX, HEIGHT_MAX, "fdf");
 	p->img = mlx_new_image(p->mlx, p->width, p->height);
 	p->data = mlx_get_data_addr(p->img, &p->bpp, &p->sizeline, &p->endian);
 	map = p->map;
@@ -128,7 +122,7 @@ void		display_map(t_param *p)
 		}
 		map = map->down;
 	}
-	mlx_put_image_to_window(p->mlx, p->win, p->img, p->coeff_x, p->coeff_y);
+	mlx_put_image_to_window(p->mlx, p->win, p->img, (WIDTH_MAX - p->width) / 2, (HEIGHT_MAX - p->height) / 2);
 	mlx_key_hook(p->win, &key_function, p);
 	mlx_loop(p->mlx);
 }

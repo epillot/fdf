@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/fdf.h"
+#include "fdf.h"
 
-static t_map	*new_point(char *param, int x, int y)
+static t_map	*new_point(char *param, int x, int y, t_param *p)
 {
 	t_map	*new;
 
@@ -21,10 +21,13 @@ static t_map	*new_point(char *param, int x, int y)
 	new->x = x;
 	new->y = y;
 	new->z = ft_atoi(param);
+	if ((new->z + 1) > p->ratio_z_max)
+		p->ratio_z_max = new->z + 1;
+	get_ratio(ft_abs(new->z), p);
 	return (new);
 }
 
-static t_map	*create_line(char **param, int y)
+static t_map	*create_line(char **param, int y, t_param *p)
 {
 	t_map	*line;
 	t_map	*last;
@@ -35,7 +38,7 @@ static t_map	*create_line(char **param, int y)
 	line = NULL;
 	while (param[i])
 	{
-		if (!(elem = new_point(param[i], i, y)))
+		if (!(elem = new_point(param[i], i, y, p)))
 			exit(EXIT_FAILURE);
 		if (line)
 		{
@@ -86,7 +89,7 @@ static void		free_point(char **point)
 	free(point);
 }
 
-t_map			*get_map(char *file)
+t_map			*get_map(char *file, t_param *p)
 {
 	int		fd;
 	t_map	*map;
@@ -102,7 +105,7 @@ t_map			*get_map(char *file)
 	{
 		if (!(point = ft_strsplit(param, ' ')))
 			exit(EXIT_FAILURE);
-		line = create_line(point, y);
+		line = create_line(point, y, p);
 		if (map)
 			link_down(map, line);
 		else

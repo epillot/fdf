@@ -24,12 +24,12 @@ void		get_iso_coord(t_map *map, t_param *p, int proj)
 			if (proj == 0)
 			{
 				line->X = 2 * line->x - 2 * line->y;
-				line->Y = line->x + line->y - line->z / p->ratio_z;
+				line->Y = line->x + line->y - line->z / p->r->ratio;
 			}
 			else
 			{
-				line->X = line->x + 2 * line->z / p->ratio_z;
-				line->Y = line->y + line->z / p->ratio_z;
+				line->X = line->x + 2 * (int)(line->z / p->r->ratio);
+				line->Y = line->y + line->z / p->r->ratio;
 			}
 			if (line->X > p->xmax)
 				p->xmax = line->X;
@@ -39,10 +39,10 @@ void		get_iso_coord(t_map *map, t_param *p, int proj)
 				p->xmin = line->X;
 			if (line->Y < p->ymin)
 				p->ymin = line->Y;
-			if (line->z / p->ratio_z > p->zmax)
-				p->zmax = line->z / p->ratio_z;
-			if (line->z / p->ratio_z < p->zmin)
-				p->zmin = line->z / p->ratio_z;
+			if (line->z / p->r->ratio > p->zmax)
+				p->zmax = line->z / p->r->ratio;
+			if (line->z / p->r->ratio < p->zmin)
+				p->zmin = line->z / p->r->ratio;
 			line = line->right;
 		}
 		map = map->down;
