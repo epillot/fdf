@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/16 16:21:32 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/23 15:56:41 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/28 19:24:07 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,18 @@
 static t_map	*new_point(char *param, int x, int y, t_param *p)
 {
 	t_map	*new;
+	int		sign;
 
+	sign = 0;
+	if (*param == '-' || *param == '+')
+		sign = 1;
+	if (!ft_isdigit(param[sign]))
+		fdf_error(1, NULL);
 	if (!(new = ft_memalloc(sizeof(t_map))))
-		return (NULL);
+		fdf_error(2, NULL);
 	new->x = x;
 	new->y = y;
 	new->z = ft_atoi(param);
-	if ((new->z + 1) > p->ratio_z_max)
-		p->ratio_z_max = new->z + 1;
 	get_ratio(ft_abs(new->z), p);
 	return (new);
 }
@@ -38,8 +42,7 @@ static t_map	*create_line(char **param, int y, t_param *p)
 	line = NULL;
 	while (param[i])
 	{
-		if (!(elem = new_point(param[i], i, y, p)))
-			exit(EXIT_FAILURE);
+		elem = new_point(param[i], i, y, p);
 		if (line)
 		{
 			last = line;
@@ -61,17 +64,11 @@ static void		link_down(t_map *map, t_map *line)
 	while (map)
 	{
 		if (!line)
-		{
-			ft_putendl_fd("Found wrong line length. Exiting.", 2);
-			exit(EXIT_FAILURE);
-		}
+			fdf_error(1, NULL);
 		map->down = line;
 		map = map->right;
 		if (!map && line->right)
-		{
-			//have to free all excess elem
-			line->right = NULL;
-		}
+			fdf_error(1, NULL);
 		line = line->right;
 	}
 }
@@ -89,9 +86,8 @@ static void		free_point(char **point)
 	free(point);
 }
 
-t_map			*get_map(char *file, t_param *p)
+t_map			*get_map(int fd, t_param *p)
 {
-	int		fd;
 	t_map	*map;
 	t_map	*line;
 	char	*param;
@@ -100,11 +96,10 @@ t_map			*get_map(char *file, t_param *p)
 
 	map = NULL;
 	y = 0;
-	fd = open(file, O_RDONLY);
 	while (get_next_line(fd, &param) > 0)
 	{
 		if (!(point = ft_strsplit(param, ' ')))
-			exit(EXIT_FAILURE);
+			fdf_error(2, NULL);
 		line = create_line(point, y, p);
 		if (map)
 			link_down(map, line);
@@ -114,5 +109,6 @@ t_map			*get_map(char *file, t_param *p)
 		free_point(point);
 		y++;
 	}
+	close(fd);
 	return (map);
 }

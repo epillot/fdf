@@ -6,7 +6,7 @@
 /*   By: epillot <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/17 12:27:29 by epillot           #+#    #+#             */
-/*   Updated: 2017/02/24 15:11:25 by epillot          ###   ########.fr       */
+/*   Updated: 2017/02/28 19:25:03 by epillot          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@ static int	get_local_endian(void)
 	return (1);
 }
 
-static void init_ratio(t_param *p)
+static void	init_ratio(t_param *p)
 {
-	p->r = ft_memalloc(sizeof(t_ratio));
+	if (!(p->r = ft_memalloc(sizeof(t_ratio))))
+		fdf_error(2, NULL);
 	p->r->ratio = 1;
 }
 
-static void get_full_ratio(t_ratio *r)
+static void	get_full_ratio(t_ratio *r)
 {
 	t_ratio *tmp1;
 	t_ratio *tmp2;
@@ -42,44 +43,34 @@ static void get_full_ratio(t_ratio *r)
 	tmp2 = tmp1->prev;
 	while (tmp2)
 	{
-		new = ft_memalloc(sizeof(t_ratio));
+		if (!(new = ft_memalloc(sizeof(t_ratio))))
+			fdf_error(2, NULL);
 		new->ratio = -(tmp2->ratio);
 		new->prev = tmp1;
 		tmp1->next = new;
 		tmp1 = tmp1->next;
 		tmp2 = tmp2->prev;
 	}
-	
 }
 
 int			main(int ac, char **av)
 {
 	t_param	p;
+	int		fd;
 
 	if (ac != 2)
+	{
+		ft_putendl_fd("usage: ./fdf <filename>", 2);
 		return (1);
-	p.mlx = mlx_init();
-	init_ratio(&p);
-	p.ratio_z_max = 1;
-	p.map = get_map(av[1], &p);
-	get_full_ratio(p.r);
-	ft_putstr("ratio:");
-/*	while (p.r->next)
-	{
-		ft_printf("%d ", p.r->ratio);
-		p.r = (p.r)->next;
 	}
-	while (p.r)
-	{
-		ft_printf("%d ", p.r->ratio);
-		p.r = (p.r)->prev;
-	}*/
-	ft_putchar('\n');
-	p.ratio_z_min = -(p.ratio_z_max);
-	//p.ratio_z = 1;
-//	ft_printf("ratio_z: %d, ratiozmin: %d, ratiozmax: %d\n", p.r->ratio, p.ratio_z_min, p.ratio_z_max);
+	if ((fd = open(av[1], O_RDONLY)) <= 0)
+		fdf_error(0, av[1]);
+	init_ratio(&p);
+	if (!(p.map = get_map(fd, &p)))
+		fdf_error(1, NULL);
+	get_full_ratio(p.r);
 	p.proj = 0;
 	p.local_endian = get_local_endian();
+	p.mlx = mlx_init();
 	display_map(&p, 1);
-	return (0);
 }
