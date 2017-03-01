@@ -6,7 +6,7 @@
 #    By: epillot <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/01/04 16:40:08 by epillot           #+#    #+#              #
-#    Updated: 2017/02/28 18:48:17 by epillot          ###   ########.fr        #
+#    Updated: 2017/03/01 13:56:26 by epillot          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ OBJ_PATH = obj/
 
 OBJ = $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 
-INC = -I./includes/
+INC = -I./includes/ -I./minilibx/
 
 all: $(NAME)
 
