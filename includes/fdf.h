@@ -23,8 +23,8 @@
 # include <limits.h>
 # include <errno.h>
 
-# define WIDTH 2048
-# define HEIGHT 1024
+# define WIDTH 1024
+# define HEIGHT 512
 
 typedef struct	s_map
 {
@@ -52,10 +52,10 @@ typedef struct	s_segment
 	int				e2;
 	int				xi;
 	int				yi;
-	int				zi;
+	double				zi;
 	int				x;
 	int				y;
-	int				z;
+	double				z;
 
 }				t_segment;
 

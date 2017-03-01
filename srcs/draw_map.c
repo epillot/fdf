@@ -33,7 +33,7 @@ static void	draw_point(int x, int y, int color, t_param p)
 	}
 }
 
-static int	get_color(t_param p, int z)
+static int	get_color(t_param p, double z)
 {
 	int		c;
 	char	*clr;
@@ -60,7 +60,7 @@ static void	init_segment_param(t_map *p0, t_map *p1, t_param p, t_segment *s)
 	s->x = p0->xx;
 	s->y = p0->yy;
 	s->z = p0->z / p.r->ratio;
-	s->zi = (p1->z / p.r->ratio - p0->z / p.r->ratio) / ft_max(s->dx, s->dy);
+	s->zi = (double)((p1->z / p.r->ratio - p0->z / p.r->ratio) / (double)ft_max(s->dx, s->dy));
 }
 
 static void	draw_segment(t_map *p0, t_map *p1, t_param p)
